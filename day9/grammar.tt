@@ -1,0 +1,25 @@
+grammar Stream 
+  rule stream
+    "{" content:stream_content? "}" <StreamNode>
+  end 
+
+  rule stream_or_garbage
+    stream:stream / garbage:garbage
+  end
+
+  rule mult_stream_or_garbage
+    ("," stream_or_garbage)*
+  end
+
+  rule stream_content
+    stream:stream_or_garbage more_streams:(mult_stream_or_garbage)
+  end
+
+  rule garbage
+    "<" content:garbage_content ">" <GarbageNode>
+  end
+
+  rule garbage_content
+    (escaped:("!" .) / data:[^!>])*
+  end
+end
